@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+option csharp_namespace = "Store.Bff.Checkout.API.Protos";
+
+package CartAPI;
+
+service CartProto
+{
+	rpc GetCart(RequestGetCart) returns (ResponseCart) {}
+}
+
+message RequestGetCart{}
+
+message ResponseCart{
+
+	string id = 1;
+    string idcustomer = 2;
+	double total =3;
+
+	repeated ResponseCartItem items = 4;
+
+	bool hasvoucher = 5;
+	double discount = 6;
+
+	ResponseVoucher voucher = 7;
+}
+
+message ResponseCartItem{
+
+	string	id = 1;
+    string	idproduct = 2;
+	string	name =3;
+	int32	quantity =4;
+	double  price = 5;
+	string	image =6;
+}
+
+message ResponseVoucher
+{ 
+    double percentage = 1;
+	double discount = 2;
+	string code =3; 
+	int32  discountType = 4;
+}

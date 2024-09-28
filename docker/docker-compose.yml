@@ -1,0 +1,206 @@
+version: "3"
+
+#CASO NAO QUEIRA DEIXAR PORTA EXPOSTA, REMOVER TODOS OS ENDPOINTS - "ports"
+
+services: 
+  sql-server:
+    image: mcr.microsoft.com/nerdstore-sql-server:latest
+    container_name: sql-server 
+    build:
+      context: ../sql
+      dockerfile: ./Dockerfile
+    ports:
+     - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "MeuDB@123"
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq-store
+    restart: always     
+    environment:
+      RABBITMQ_DEFAULT_USER: "store"
+      RABBITMQ_DEFAULT_PASS: "store"
+    #ports: 
+    #    - "5672:5672"
+    #    - "15672:15672" 
+  web-mvc:
+    image: pearlcore/store-web-mvc-ecommerce:latest
+    #container_name: store-web-mvc-ecommerce
+    restart: always     
+    build:
+      context: ../src
+      dockerfile:  ./Web/Front.MVC/Dockerfile
+    volumes:
+      - dpkeys:/var/data_protection_keys/
+    #ports: 
+    #    - "5001:5001"
+    #    - "5003:5003"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production
+        - ASPNETCORE_URLS=http://*:5001
+    depends_on:
+        - api-catalog
+        - api-authentication
+        - api-customer
+        - api-bff  
+  api-authentication:
+    image: pearlcore/store-api-authentication:latest
+    container_name: store-api-authentication
+    restart: always     
+    build:
+      context: ../src
+      dockerfile:  ./Services/Authentication/Store.Authentication.API/Dockerfile    
+    #ports: 
+    #    - "5101:5101"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production
+        - ASPNETCORE_URLS=https://+:5101;http://+:5102
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=store
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/store-certificate.pfx 
+    volumes:
+        - ./certs:/https:ro
+    depends_on:
+        - sql-server
+        - rabbitmq  
+  api-shopcart:
+    image: pearlcore/store-api-shopcart:latest
+    container_name: store-api-shopcart
+    restart: always     
+    build:
+      context: ../src
+      dockerfile:  ./Services/shopcart/Store.ShopCart.API/Dockerfile
+    #ports: 
+    #    - "5601:5601"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production
+        - ASPNETCORE_URLS=https://+:5601;http://+:5602
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=store
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/store-certificate.pfx 
+    volumes:
+        - ./certs:/https:ro
+    depends_on:
+        - sql-server
+        - rabbitmq
+        - api-authentication
+  api-catalog:
+    image: pearlcore/store-api-catalog:latest
+    container_name: store-api-catalog
+    restart: always     
+    build:
+      context: ../src
+      dockerfile:  ./Services/Catalog/Store.Catalog.API/Dockerfile
+    #ports: 
+    #    - "5201:5201"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production 
+        - ASPNETCORE_URLS=https://+:5201;http://+:5202
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=store
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/store-certificate.pfx 
+    volumes:
+        - ./certs:/https:ro
+    depends_on:
+        - sql-server
+        - rabbitmq
+  api-customer:
+    image: pearlcore/store-api-customer:latest
+    container_name: store-api-customer
+    restart: always     
+    build:
+      context: ../src
+      dockerfile:  ./Services/Customer/Store.Customer.API/Dockerfile
+    #ports: 
+    #    - "5301:5301"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production 
+        - ASPNETCORE_URLS=https://+:5301;http://+:5302
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=store
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/store-certificate.pfx 
+    volumes:
+        - ./certs:/https:ro
+    depends_on:
+        - sql-server
+        - rabbitmq
+        - api-authentication
+  api-bff:
+    image: pearlcore/store-api-bff:latest
+    container_name: store-api-bff
+    restart: always     
+    build:
+      context: ../src
+      dockerfile:  ./ApiGateways/Store.Bff.Checkout.API/Dockerfile
+    #ports: 
+    #    - "5701:5701"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production 
+        - ASPNETCORE_URLS=https://+:5701;http://+:5702
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=store
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/store-certificate.pfx 
+    volumes:
+        - ./certs:/https:ro
+    depends_on: 
+        - rabbitmq
+        - api-authentication
+        - api-shopcart
+        - api-payment
+        - api-order 
+  api-payment:
+    image: pearlcore/store-api-payment:latest
+    container_name: store-api-payment
+    restart: always 
+    build:
+      context: ../src
+      dockerfile:  ./Services/payment/Store.Payment.API/Dockerfile
+    #ports: 
+    #    - "5501:5501"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production 
+        - ASPNETCORE_URLS=https://+:5501;http://+:5502
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=store
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/store-certificate.pfx 
+    volumes:
+        - ./certs:/https:ro
+    depends_on:
+        - rabbitmq
+        - api-authentication
+        - api-order         
+        - sql-server
+  api-order:
+    image: pearlcore/store-api-order:latest
+    container_name: store-api-order
+    restart: always 
+    build:
+      context: ../src
+      dockerfile:  ./Services/order/Store.Orders.API/Dockerfile
+    #ports: 
+    #    - "5401:5401"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production
+        - ASPNETCORE_URLS=https://+:5401;http://+:5402
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=store
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/store-certificate.pfx 
+    volumes:
+        - ./certs:/https:ro
+    depends_on:
+        - sql-server
+        - api-authentication
+        - rabbitmq
+
+  devstore-server:
+    image: desenvolvedorio/nerdstore-server:latest
+    container_name: store-server  
+    restart: always 
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/store-certificate.key:/etc/nginx/store-certificate.key:ro
+      - ./nginx/store-certificate.pem:/etc/nginx/store-certificate.pem:ro
+    build:
+      context: ./
+      dockerfile: ./nginx/Dockerfile 
+    ports:
+      - "80:80"
+      - "443:443" 
+    depends_on:
+        - web-mvc  
+volumes:
+    dpkeys:

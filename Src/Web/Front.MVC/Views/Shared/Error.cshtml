@@ -1,0 +1,18 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = @Model.Title;
+}
+<div class="container">
+    <div style="padding-top: 200px; text-align: center">
+        @{
+            if (Model == null)
+            {
+                <h2>Unfortunately, an error has happened. Don't worry our team are looking for it!</h2>
+            }
+            else
+            {
+                <h2>@Html.Raw(Model.Message)</h2>
+            }
+        }
+    </div>
+</div>
