@@ -33,14 +33,6 @@
   <p dir="auto"><a target="_blank" rel="noopener noreferrer" href="https://github.com/raphamendes123/e-commerce/blob/main/docs/arquitetura-aplicacao.png">
   <img src="https://github.com/raphamendes123/e-commerce/blob/main/docs/arquitetura-aplicacao.png" alt="Arquitetura da aplicação" style="max-width: 100%;"></a></p>
 
-  <p dir="auto">Esta aplicação <strong>não possui uma arquitetura em microserviços, e sim baseada em microserviços</strong>. Isto se dá porque ela abre mão de "regras" que são necessárias em uma aplicação em microserviços. Além disso, aplicações nesse estilo arquitetural são complexas e quase sempre desnecessárias para o contexto do problema de negócio que se deseja resolver, como é citado pelo Eduardo Pires:</p>
-<blockquote>
-
-  <p dir="auto"><em>"Usar aplicações em microservices são para poucos cenários, onde são necessários extremamente de atualizações e escalabilidade (a cada pouco tempo tem que subir novidades tendo milhares/milhões de usuários), como por exemplo em aplicações como: Netflix, Uber, Amazon e afins. Agora em cenários de aplicações corporativas em qualquer tipo de setor comercial/industrial pode ser muito bem entregue no modelo com arquitetura distribuída. E caso evolua muito a aplicação este modelo está a poucos passos de se tornar um microserviço."</em></p>
-</blockquote>
-
-  <p dir="auto">Dessa forma, utilizarmos uma arquitetura em microserviços dependendo da complexidade do negócio pode ser uma <em>"bazuca para matar uma barata"</em>.</p><hr>
-
   <div class="markdown-heading" dir="auto"><h2 tabindex="-1" class="heading-element" dir="auto">Como executar?</h2>
     <a id="user-content-como-executar" class="anchor" aria-label="Permalink: Como executar?" href="#como-executar">
       <svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" />
@@ -111,32 +103,37 @@
         </a>
 </div>
 
-<p dir="auto">A execução pelo Docker, mais especificamente pelo <a href="https://docs.docker.com/compose/" rel="nofollow">Docker Compose</a>, é muito mais simples e rápido do que anterior, pois não é necessário ter toda a stack necessária para executar a aplicação, mas somente o Docker. E esse setup rápido é um de seus benefícios, além da escalabilidade proporcionada e a maior facilidade de implantação da aplicação. Dado isso, basta seguir os seguintes passos:</p>
+<p dir="auto">A execução pelo Docker, mais especificamente pelo 
+    <a href="https://docs.docker.com/compose/" rel="nofollow">Docker Compose</a>, 
+    é muito mais simples e rápido do que anterior, pois não é necessário ter toda a stack necessária para executar a aplicação, mas somente o Docker. 
+    E esse setup rápido é um de seus benefícios, além da escalabilidade proporcionada e a maior facilidade de implantação da aplicação. Dado isso, basta seguir os seguintes passos:
+</p>
 <ul dir="auto">
-<li>
-<p dir="auto">Obviamente, instalar o Docker habilitando o WSL2 e virtualização, principalmente se estiver no SO Windows;</p>
-</li>
-<li>
-<p dir="auto">Abra o terminal no diretório <em>/deploy</em> e execute o seguinte comando:</p>
-<div class="snippet-clipboard-content notranslate position-relative overflow-auto"><pre class="notranslate"><code>docker-compose -f docker-compose.yml up --build
-</code></pre><div class="zeroclipboard-container">
-    <clipboard-copy aria-label="Copy" class="ClipboardButton btn btn-invisible js-clipboard-copy m-2 p-0 d-flex flex-justify-center flex-items-center" data-copy-feedback="Copied!" data-tooltip-direction="w" value="docker-compose -f docker-compose.yml up --build" tabindex="0" role="button">
-      <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-copy js-clipboard-copy-icon" />
-      <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check js-clipboard-check-icon color-fg-success d-none" />         
-    </clipboard-copy>
-  </div></div>
-<p dir="auto"><strong>OBS.:</strong> <em>--build</em> é uma flag opcional que força a criação de todas as imagens docker.</p>
-</li>
-<li>
-<p dir="auto">Para remover todos os containers docker gerados a partir das imagens docker basta usar o seguinte comando:</p>
-<div class="snippet-clipboard-content notranslate position-relative overflow-auto"><pre class="notranslate"><code>docker-compose -f docker-compose.yml down
-</code></pre><div class="zeroclipboard-container">
-    <clipboard-copy aria-label="Copy" class="ClipboardButton btn btn-invisible js-clipboard-copy m-2 p-0 d-flex flex-justify-center flex-items-center" data-copy-feedback="Copied!" data-tooltip-direction="w" value="docker-compose -f docker-compose.yml down" tabindex="0" role="button">
-      <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-copy js-clipboard-copy-icon" />
-      <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check js-clipboard-check-icon color-fg-success d-none" />
-    </clipboard-copy>
-  </div></div>
-</li>
+    <li>
+        <p dir="auto">Obviamente, instalar o Docker habilitando o WSL2 e virtualização, principalmente se estiver no SO Windows;</p>
+    </li>
+    <li>
+    <p dir="auto">Abra o terminal no diretório <em>/deploy</em> e execute o seguinte comando:</p>
+    <div class="snippet-clipboard-content notranslate position-relative overflow-auto"><pre class="notranslate"><code>docker-compose -f docker-compose.yml up --build
+    </code></pre><div class="zeroclipboard-container">
+        <clipboard-copy aria-label="Copy" class="ClipboardButton btn btn-invisible js-clipboard-copy m-2 p-0 d-flex flex-justify-center flex-items-center" data-copy-feedback="Copied!" data-tooltip-direction="w" value="docker-compose -f docker-compose.yml up --build" tabindex="0" role="button">
+          <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-copy js-clipboard-copy-icon" />
+          <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check js-clipboard-check-icon color-fg-success d-none" />         
+        </clipboard-copy>
+      </div></div>
+    <p dir="auto"><strong>OBS.:</strong> <em>--build</em> é uma flag opcional que força a criação de todas as imagens docker.</p>
+    </li>
+    <li>
+        <p dir="auto">Para remover todos os containers docker gerados a partir das imagens docker basta usar o seguinte comando:</p>
+        <div class="snippet-clipboard-content notranslate position-relative overflow-auto"><pre class="notranslate"><code>docker-compose -f docker-compose.yml down
+        </code></pre><div class="zeroclipboard-container">
+            <clipboard-copy aria-label="Copy" class="ClipboardButton btn btn-invisible js-clipboard-copy m-2 p-0 d-flex flex-justify-center flex-items-center" data-copy-feedback="Copied!" data-tooltip-direction="w" value="docker-compose -f docker-compose.yml down" tabindex="0" role="button">
+              <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-copy js-clipboard-copy-icon" />
+              <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check js-clipboard-check-icon color-fg-success d-none" />
+            </clipboard-copy>
+          </div>
+        </div>
+    </li>
 </ul>
 <p dir="auto"><strong>OBS.:</strong> pode ocorrer de ao rodar pelo Docker através do docker-compose as API's subam primeiro do que o broker de mensagens (Event Bus). Isso acaba levando nas API's não se conectarem broker de mensagens e ocasionar inconsistências na aplicação. Caso isto ocorra basta restartar as instâncias dos containers de todas as API's manualmente pelo Docker e voltará a funcionar corretamente.</p>
 <hr>
